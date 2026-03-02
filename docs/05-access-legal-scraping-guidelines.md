@@ -11,11 +11,13 @@ This document sets a practical ingestion policy for the prototype so we can move
 ## Rule 1: API/official feeds first
 
 Prefer:
+
 1. Official API
 2. Written partnership feed/export
 3. Public dataset with explicit license
 
 Only consider scraping if:
+
 - no practical API/feed exists
 - terms allow it (or do not prohibit with legal confirmation)
 - robots and rate limits are respected
@@ -24,6 +26,7 @@ Only consider scraping if:
 ## Rule 2: Keep source provenance for every field
 
 Every ingested field should carry:
+
 - source URL
 - timestamp
 - license status (`allowed`, `restricted`, `unknown`)
@@ -39,21 +42,25 @@ Even if content is publicly viewable, that does not imply extraction/republicati
 ## AKC
 
 Observed language indicates:
+
 - prohibition on robots/scrapers/data extraction tools
 - prohibition on automated screen scraping for commercial purposes
 - reproduction restrictions for online material, with permission workflows required
 
 Action:
+
 - do not bulk scrape AKC pages for product data without explicit authorization.
 - if needed, pursue written permission path described in AKC policies.
 
 ## OFA
 
 Observed language indicates:
+
 - OFA content/database search results are copyrighted
 - public reproduction prohibited without express permission
 
 Action:
+
 - treat OFA as partnership/licensing-required for database-level integration.
 
 ## Shelter platform ecosystems
@@ -67,6 +74,7 @@ Action:
 - Public listing pages are accessible.
 
 Action:
+
 - direct manual verification of current developer program and contract terms before systematic ingestion.
 
 ---

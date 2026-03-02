@@ -12,9 +12,11 @@ _Last updated: 2026-03-01_
 ## Entity Overview
 
 ## 1) `Breed`
+
 Core breed profile.
 
 Suggested fields:
+
 - `breed_id` (uuid)
 - `canonical_name`
 - `aliases` (json array)
@@ -30,9 +32,11 @@ Suggested fields:
 - `updated_at`
 
 ## 2) `BreedHealthProfile`
+
 Breed-specific health and screening metadata.
 
 Suggested fields:
+
 - `breed_health_id` (uuid)
 - `breed_id` (fk)
 - `condition_name`
@@ -44,9 +48,11 @@ Suggested fields:
 - `updated_at`
 
 ## 3) `Organization`
+
 Shelter, rescue, breeder, registry listing organization.
 
 Suggested fields:
+
 - `organization_id` (uuid)
 - `org_type` (`shelter`, `rescue`, `breeder`, `registry`, `aggregator`)
 - `display_name`
@@ -56,9 +62,11 @@ Suggested fields:
 - `source_platform`
 
 ## 4) `DogListing`
+
 Individual adoptable/purchase listing.
 
 Suggested fields:
+
 - `listing_id` (uuid)
 - `source_platform` (Petfinder/RescueGroups/CKC Puppy List/AKC Marketplace/etc.)
 - `source_listing_id`
@@ -87,9 +95,11 @@ Suggested fields:
 - `first_seen_at`, `last_seen_at`
 
 ## 5) `ListingMedia`
+
 Images/videos and optional hashes for dedupe.
 
 Suggested fields:
+
 - `media_id` (uuid)
 - `listing_id` (fk)
 - `media_type`
@@ -98,9 +108,11 @@ Suggested fields:
 - `is_primary`
 
 ## 6) `SourceAttribution`
+
 Field-level provenance.
 
 Suggested fields:
+
 - `attribution_id` (uuid)
 - `entity_type`, `entity_id`
 - `field_name`
@@ -111,9 +123,11 @@ Suggested fields:
 - `confidence`
 
 ## 7) `OwnerPreferenceProfile`
+
 User-side matching inputs.
 
 Suggested fields:
+
 - `profile_id` (uuid)
 - `household_children_age_bands` (json)
 - `other_pets` (json)
@@ -128,9 +142,11 @@ Suggested fields:
 - `acquisition_preference` (`adoption`, `purchase`, `either`)
 
 ## 8) `MatchScore`
+
 Transparent score components.
 
 Suggested fields:
+
 - `match_id` (uuid)
 - `profile_id` (fk)
 - `target_type` (`breed`, `dog_listing`)

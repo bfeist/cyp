@@ -14,6 +14,7 @@ _Last updated: 2026-03-01_
 ## Breed / Registry / Standards Sources
 
 ### 1) AKC Dog Breeds
+
 - URL: https://www.akc.org/dog-breeds/
 - Role: Breed
 - Access: Web listings
@@ -22,6 +23,7 @@ _Last updated: 2026-03-01_
 - Caution: AKC Terms prohibit scraping/automated extraction for commercial usage.
 
 ### 2) CKC Choosing a Breed (Canada)
+
 - URL: https://www.ckc.ca/en/Choosing-a-Dog/Choosing-a-Breed
 - Role: Breed
 - Access: Web listings
@@ -30,6 +32,7 @@ _Last updated: 2026-03-01_
 - Caution: use terms-compliant ingestion path.
 
 ### 3) UKC Breeds / Breed Standards
+
 - URL: https://www.ukcdogs.com/breeds
 - Role: Breed + Breeder entry point
 - Access: Web + related standards pages
@@ -38,6 +41,7 @@ _Last updated: 2026-03-01_
 - Caution: confirm reuse permissions before extraction.
 
 ### 4) FCI Nomenclature
+
 - URL: https://www.fci.be/en/nomenclature/
 - Role: Breed taxonomy/global standards reference
 - Access: Web
@@ -50,6 +54,7 @@ _Last updated: 2026-03-01_
 ## Adoption / Shelter Listing Sources
 
 ### 5) Petfinder dog search (US/CA)
+
 - URLs:
   - https://www.petfinder.com/search/dogs-for-adoption/us/
   - https://www.petfinder.com/search/dogs-for-adoption/ca/
@@ -60,6 +65,7 @@ _Last updated: 2026-03-01_
 - Caution: verify current API program + terms before any systematic collection.
 
 ### 6) RescueGroups
+
 - URLs:
   - https://www.rescuegroups.org/
   - https://www.rescuegroups.org/services/adoptable-pet-data-api/
@@ -70,6 +76,7 @@ _Last updated: 2026-03-01_
 - Caution: implement per API terms and org-level permissions.
 
 ### 7) Shelterluv
+
 - URL: https://www.shelterluv.com/
 - Role: Shelter operations platform
 - Access: SaaS platform (no public open listing feed observed)
@@ -78,6 +85,7 @@ _Last updated: 2026-03-01_
 - Caution: likely partnership/integration required.
 
 ### 8) 24Petconnect / PetPlace bridge
+
 - URLs:
   - https://www.24petconnect.com/
   - https://www.petplace.com/pet-adoption/
@@ -92,6 +100,7 @@ _Last updated: 2026-03-01_
 ## Breeder / Purchase Sources
 
 ### 9) AKC Marketplace
+
 - URL: https://marketplace.akc.org/puppies
 - Role: Breeder/purchase
 - Access: Web listings
@@ -100,6 +109,7 @@ _Last updated: 2026-03-01_
 - Caution: governed by AKC terms/restrictions.
 
 ### 10) CKC Puppy List (Canada)
+
 - URL: https://www.ckc.ca/en/Choosing-a-Dog/PuppyList
 - Role: Breeder/purchase
 - Access: Searchable web directory
@@ -108,6 +118,7 @@ _Last updated: 2026-03-01_
 - Caution: verify allowed usage and contact-data compliance.
 
 ### 11) Good Dog
+
 - URL: https://www.gooddog.com/
 - Role: Breeder + shelter/rescue marketplace
 - Access: Web platform
@@ -120,6 +131,7 @@ _Last updated: 2026-03-01_
 ## Health / Genetics / Risk Sources
 
 ### 12) OFA + CHIC
+
 - URLs:
   - https://ofa.org/
   - https://ofa.org/chic-programs/
@@ -134,6 +146,7 @@ _Last updated: 2026-03-01_
 ## Open/Commercial Structured APIs
 
 ### 13) API Ninjas Dogs API
+
 - URL: https://www.api-ninjas.com/api/dogs
 - Role: Breed structured features
 - Access: API
@@ -142,6 +155,7 @@ _Last updated: 2026-03-01_
 - Caution: commercial terms, request limits, and model provenance review needed.
 
 ### 14) TheDogAPI
+
 - URL: https://thedogapi.com/
 - Role: Breed/health/intelligence platform
 - Access: Product/API offerings
@@ -150,6 +164,7 @@ _Last updated: 2026-03-01_
 - Caution: commercial pricing and data rights negotiation likely required.
 
 ### 15) Dog CEO API
+
 - URL: https://dog.ceo/dog-api/
 - Role: Breed image/media
 - Access: Open image API
@@ -162,6 +177,7 @@ _Last updated: 2026-03-01_
 ## Sector Analytics / Participation Coverage
 
 ### 16) Shelter Animals Count
+
 - URL: https://www.shelteranimalscount.org/
 - Role: Shelter analytics and national trend reporting (US + Canada)
 - Access: dashboards, reports, data-use agreement workflows
@@ -170,6 +186,7 @@ _Last updated: 2026-03-01_
 - Caution: not a direct “adoptable now” consumer listing API.
 
 ### 17) Humane Canada
+
 - URLs:
   - https://www.humanecanada.ca/
   - https://humanecanada.ca/en/sector-professionals/humane-canada-accreditation

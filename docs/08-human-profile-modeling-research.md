@@ -244,6 +244,7 @@ Hypothesis: controlled profile drift updates reduce mismatch over time.
 ## Session A — Dating-app profiling advances transferable to pet matching
 
 Request:
+
 - latest approaches in preference learning, psychometrics, and behavioral ranking
 - methods with strong evidence for reducing mismatch
 - practical implementation patterns for startups
@@ -251,12 +252,14 @@ Request:
 ## Session B — Human-animal bond outcome predictors
 
 Request:
+
 - literature on factors predicting successful dog-owner fit and retention
 - validated scales or instruments relevant to commitment, training adherence, and lifestyle fit
 
 ## Session C — Responsible profiling and fairness
 
 Request:
+
 - best practices for adaptive profiling systems that avoid discriminatory outcomes
 - explainability patterns for consumer recommendation systems
 

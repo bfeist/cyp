@@ -22,9 +22,9 @@ Before each deep research run:
 1. Start a brand-new chat/session.
 2. Paste the corresponding brief prompt from this file.
 3. Add this final line:
-	- `Return output as markdown with headings exactly matching the requested format.`
+   - `Return output as markdown with headings exactly matching the requested format.`
 4. After the report returns, save it to:
-	- `docs/research-runs/YYYY-MM-DD-<brief-name>.md`
+   - `docs/research-runs/YYYY-MM-DD-<brief-name>.md`
 
 Suggested file names:
 
@@ -98,13 +98,15 @@ Prompt:
 "You are conducting technical due diligence for a US/Canada pet-adoption matching app.
 
 Tasks:
-1) Determine current Petfinder developer/API availability as of today.
-2) Provide official docs links, auth flow, rate limits, and key endpoint examples.
-3) Compare with RescueGroups and Adopt-a-Pet access models.
-4) Provide the best ingestion strategy for MVP and production.
-5) Identify likely blockers and fallback ingestion paths.
+
+1. Determine current Petfinder developer/API availability as of today.
+2. Provide official docs links, auth flow, rate limits, and key endpoint examples.
+3. Compare with RescueGroups and Adopt-a-Pet access models.
+4. Provide the best ingestion strategy for MVP and production.
+5. Identify likely blockers and fallback ingestion paths.
 
 Output format:
+
 - Executive summary
 - Source-by-source comparison table
 - Endpoint and auth summary by source
@@ -120,12 +122,14 @@ Prompt:
 "Map the shelter/rescue software ecosystem in the US and Canada for 2026.
 
 Tasks:
-1) Identify top platforms used by shelters/rescues (e.g., Shelterluv, PetPoint, Chameleon, RescueGroups, others).
-2) For each platform, identify whether public APIs, export feeds, partner integrations, or listing syndication exist.
-3) Note whether temperament/behavior fields are structured or free-text.
-4) Assess feasibility of building one connector per platform.
+
+1. Identify top platforms used by shelters/rescues (e.g., Shelterluv, PetPoint, Chameleon, RescueGroups, others).
+2. For each platform, identify whether public APIs, export feeds, partner integrations, or listing syndication exist.
+3. Note whether temperament/behavior fields are structured or free-text.
+4. Assess feasibility of building one connector per platform.
 
 Output format:
+
 - Ranked platform list
 - Integration capability matrix
 - Field availability matrix
@@ -140,12 +144,14 @@ Prompt:
 "Research Canada-specific adoption listing infrastructure.
 
 Tasks:
-1) Determine whether any national Canadian adoptable-pet index exists with broad coverage.
-2) Identify provincial/regional shelter networks and major aggregators.
-3) Identify data-sharing standards, if any, across Canadian humane societies/SPCAs.
-4) Provide the best path to obtain broad Canadian listing coverage.
+
+1. Determine whether any national Canadian adoptable-pet index exists with broad coverage.
+2. Identify provincial/regional shelter networks and major aggregators.
+3. Identify data-sharing standards, if any, across Canadian humane societies/SPCAs.
+4. Provide the best path to obtain broad Canadian listing coverage.
 
 Output format:
+
 - National vs provincial landscape summary
 - Province-by-province key channels
 - Partnership targets with rationale
@@ -160,12 +166,14 @@ Prompt:
 "Design a breeder-quality signal framework for a dog matching platform.
 
 Tasks:
-1) Identify measurable breeder quality indicators (health testing evidence, registrations, CHIC/OFA references, contracts, socialization practices).
-2) Compare data availability across AKC Marketplace, CKC Puppy List, UKC, Good Dog, and independent sites.
-3) Propose a scoring rubric with transparent explanations.
-4) Identify practical risks in ranking or labeling breeders and mitigation options.
+
+1. Identify measurable breeder quality indicators (health testing evidence, registrations, CHIC/OFA references, contracts, socialization practices).
+2. Compare data availability across AKC Marketplace, CKC Puppy List, UKC, Good Dog, and independent sites.
+3. Propose a scoring rubric with transparent explanations.
+4. Identify practical risks in ranking or labeling breeders and mitigation options.
 
 Output format:
+
 - Indicator framework
 - Data availability by source
 - Scoring rubric draft (0-100)
@@ -180,12 +188,14 @@ Prompt:
 "Design an NLP extraction approach for shelter/rescue dog descriptions.
 
 Tasks:
-1) Propose ontology for temperament and behavior labels (reactivity, sociability, prey drive, energy, separation behavior, trainability cues).
-2) Define extraction pipeline from noisy descriptions to structured attributes.
-3) Include uncertainty/confidence scoring and contradiction detection.
-4) Provide annotation guidelines and evaluation metrics.
+
+1. Propose ontology for temperament and behavior labels (reactivity, sociability, prey drive, energy, separation behavior, trainability cues).
+2. Define extraction pipeline from noisy descriptions to structured attributes.
+3. Include uncertainty/confidence scoring and contradiction detection.
+4. Provide annotation guidelines and evaluation metrics.
 
 Output format:
+
 - Ontology draft
 - Pipeline architecture
 - Example input/output pairs
@@ -200,13 +210,15 @@ Prompt:
 "Design a human-profile modeling framework for a dog-owner matchmaking application.
 
 Tasks:
-1) Define profile dimensions that predict successful owner↔dog outcomes.
-2) Compare explicit questionnaire signals vs implicit behavioral signals.
-3) Propose adaptive preference elicitation methods (pairwise choices, conversational prompts, active learning).
-4) Provide a modeling strategy (baseline rules + ML ranker + online feedback loop).
-5) Specify explainability approach and profile correction UX.
+
+1. Define profile dimensions that predict successful owner↔dog outcomes.
+2. Compare explicit questionnaire signals vs implicit behavioral signals.
+3. Propose adaptive preference elicitation methods (pairwise choices, conversational prompts, active learning).
+4. Provide a modeling strategy (baseline rules + ML ranker + online feedback loop).
+5. Specify explainability approach and profile correction UX.
 
 Output format:
+
 - Trait ontology and signal map
 - Data model and event schema recommendations
 - MVP vs phase-2 model roadmap
@@ -221,13 +233,15 @@ Prompt:
 "Design a production-grade Selenium data acquisition architecture for a multi-source pet data clearinghouse.
 
 Tasks:
-1) Define crawler orchestration and queue strategy for hundreds of source jobs/day.
-2) Define selector management, breakage detection, and canary test strategy.
-3) Propose source policy tiers (API/feed/scrape/manual) and promotion/demotion rules.
-4) Specify audit/provenance artifacts to store for each extraction run.
-5) Provide operational KPIs and incident playbooks.
+
+1. Define crawler orchestration and queue strategy for hundreds of source jobs/day.
+2. Define selector management, breakage detection, and canary test strategy.
+3. Propose source policy tiers (API/feed/scrape/manual) and promotion/demotion rules.
+4. Specify audit/provenance artifacts to store for each extraction run.
+5. Provide operational KPIs and incident playbooks.
 
 Output format:
+
 - Reference architecture diagram (text description)
 - Component responsibilities
 - Failure modes and mitigations
@@ -256,17 +270,17 @@ If any are missing, ask the same agent:
 After all briefs are complete:
 
 1. Create `docs/research-runs/MASTER-SUMMARY.md` containing:
-	- decisions
-	- open questions
-	- final architecture changes
+   - decisions
+   - open questions
+   - final architecture changes
 2. Update these files from the summary:
-	- `docs/01-data-landscape-us-canada.md`
-	- `docs/02-source-catalog.md`
-	- `docs/07-clearinghouse-api-architecture.md`
-	- `docs/08-human-profile-modeling-research.md`
+   - `docs/01-data-landscape-us-canada.md`
+   - `docs/02-source-catalog.md`
+   - `docs/07-clearinghouse-api-architecture.md`
+   - `docs/08-human-profile-modeling-research.md`
 3. Add one section at bottom of this file:
-	- `## Completed Research Runs`
-	- list each run file and status (`accepted`, `needs-follow-up`)
+   - `## Completed Research Runs`
+   - list each run file and status (`accepted`, `needs-follow-up`)
 
 ---
 
