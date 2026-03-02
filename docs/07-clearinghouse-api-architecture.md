@@ -1,6 +1,8 @@
 # Clearinghouse API Architecture (Dog Match Platform)
 
-_Last updated: 2026-03-01_
+_Last updated: 2026-03-02 (updated with deep research run findings from Briefs 2, 3, 7)_
+
+> **Research findings incorporated:** connector priority order confirmed (Brief 2), Canada vendor stack confirmed (Brief 3), Selenium/queue/provenance architecture confirmed (Brief 7). See `00-executive-summary.md` for full decisions.
 
 ## Objective
 
@@ -83,14 +85,52 @@ Many valuable sources are JS-heavy, paginated, and anti-static-fetch. Selenium i
 - authenticated workflows where permitted
 - visual/behavioral regression checks of extraction selectors
 
-## Selenium Extractor Pipeline
+## Selenium Extractor Pipeline (updated from Brief 7)
 
-1. `discover_job` — source-specific URL and filter seeds
-2. `render_job` — open browser session, run navigation script
-3. `extract_job` — parse DOM snapshots into structured records
-4. `enrich_job` — classify text traits and normalize fields
-5. `publish_job` — write raw + canonical payloads
-6. `audit_job` — store screenshot, HTML hash, selector success stats
+### Architecture overview
+
+```
+Control Plane
+  Source Registry + Policy Engine (source metadata, tier, schedule, selector spec versions)
+  Workflow Orchestrator (daily schedules, backfills, retries) → emits SourceRun jobs
+
+Job Queue / Router
+  Priority lanes (P0/P1/P2) | per-source concurrency caps | DLQ / poison isolation
+
+Data Plane
+  Tiered Acquisition Workers (Kubernetes deployments; HPA-scaled)
+    ├── API/Feed workers
+    ├── Selenium scrape workers
+    └── Manual task hooks
+  Browser Execution Fabric (Selenium Grid: Router → New Session Queue → Distributor → Nodes)
+  Artifact + Provenance Store (object storage: WARC/HTML, screenshots, HAR, run manifests)
+  Normalize + Validate + Dedupe → Clearinghouse Data Stores (operational DB + warehouse/lake)
+  Observability (metrics + tracing + logs + breakage detection + canary monitors)
+```
+
+### SourceRun contract (minimum fields)
+
+- `source_id`, `tier`, `schedule`, `rate_limit_budget`
+- `extraction_spec_id` (versioned; treat selector changes as releases)
+- `run_type` (incremental / full)
+- `priority` (P0 / P1 / P2)
+
+### Queue design
+
+- At-least-once delivery; design all writes as idempotent (deterministic key: `source_id + native_id + observation_date`)
+- Visibility timeout must exceed worst-case run time
+- DLQ for repeated failures; isolate poison sources
+
+### Breakage detection layers
+
+1. Unit tests against stored HTML fixtures (pre-merge)
+2. Canary runs on small segment before broad rollout (treat selector changes like software releases)
+3. Synthetic monitors: scripted Selenium transactions on fixed schedule
+4. Production alerts: selector exception rate, record count drops, schema coverage regressions
+
+### Explicit waits (required)
+
+All Selenium workers must use explicit waits (poll until condition satisfied), not sleep timers, for dynamic DOM synchronization.
 
 ## Recommended technical stack
 
@@ -101,14 +141,18 @@ Many valuable sources are JS-heavy, paginated, and anti-static-fetch. Selenium i
 - Proxy/IP strategy where contractually allowed
 - Selector configuration registry per source
 
-## Data extraction artifacts to persist
+## Data extraction artifacts to persist (confirmed by Brief 7)
 
-- raw HTML snapshot hash
-- extracted JSON payload
-- screenshot evidence
-- extractor version
-- selector set version
-- runtime metrics (latency, retries, blocks)
+Every SourceRun must produce a **run manifest** containing:
+
+- `source_id`, `run_id`, timestamps, worker identity, browser/driver versions, IP/proxy identity, orchestrator job ID, ExtractionSpec version, code version
+
+Plus blobs in object storage:
+
+- **WARC/HTML snapshot** — ISO standard for web crawl archiving; essential for replaying regressions
+- **Screenshots** — at minimum one final-state screenshot; step-level on failures
+- **HAR log** — structured HTTP archive for debugging hidden XHR/GraphQL endpoints
+- **Logs** — centralized, integrity-controlled, with explicit retention policy
 
 ## Anti-breakage controls
 
@@ -121,12 +165,30 @@ Many valuable sources are JS-heavy, paginated, and anti-static-fetch. Selenium i
 
 ## Ingestion Governance Model
 
-## Source policy tiers
+## Source policy tiers (confirmed and refined by Brief 7)
 
-- `Tier A` — official API/feed with explicit usage rights
-- `Tier B` — partnership/contractual export
-- `Tier C` — Selenium/web extraction with approved risk posture
-- `Tier D` — manual curation only (no automated pull)
+| Tier   | Definition                                                    | Examples                                                      | Notes                               |
+| ------ | ------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------- |
+| Tier A | Official or partner APIs                                      | RescueGroups v5, ShelterLuv API, ShelterBuddy API             | Highest reliability, lowest compute |
+| Tier B | Structured partner exports, FTP/SFTP feeds, syndication dumps | Petstablished FTP AutoUpload, PetPoint webservices activation | Moderate reliability, low compute   |
+| Tier C | Selenium/browser automation for dynamic sites                 | AKC Marketplace, breeder directories, dynamic portals         | High compute, highest breakage rate |
+| Tier D | Manual capture                                                | CAPTCHA-blocked or legally restricted sources                 | Human-assisted only                 |
+
+**Promotion/demotion rules (confirmed by Brief 7):**
+
+- Promote C → A/B when stable hidden JSON/GraphQL endpoints are discovered via HAR inspection
+- Demote A/B → C only when API/feed coverage drops below threshold and policy permits scraping
+- Demote C → D when automation is persistently blocked (403/429 loops, interstitial challenges)
+
+## Confirmed connector priority order (from Brief 2)
+
+1. RescueGroups — REST API + FTP download, Tier A
+2. ShelterLuv — API key, Tier A
+3. ShelterBuddy — REST API with incremental sync, Tier A
+4. PetPoint/24Pet/24Petconnect — vendor-mediated, Tier B/A depending on agreement
+5. Petstablished — API + FTP export, Tier B
+6. Chameleon — Crystal Report + SFTP, Tier B (phase 2)
+7. Shelter Pro, ASM — file-based, Tier B long tail
 
 ## For each source, maintain
 
@@ -231,6 +293,15 @@ Use explicit and behavioral outcomes to recalibrate profile and ranking weights.
 - configurable jurisdictional policy rules
 
 ---
+
+## Operational KPIs (Golden Signals mapped to ingestion — from Brief 7)
+
+| Signal     | What to measure                                                                 |
+| ---------- | ------------------------------------------------------------------------------- |
+| Latency    | Queue wait time; SourceRun duration; Grid session acquisition time              |
+| Traffic    | Runs/day, pages/day, records/day per tier                                       |
+| Errors     | Per-source failure rate, selector exception rate, HTTP 429/403/5xx distribution |
+| Saturation | Browser node utilization, pending session queue depth, worker CPU/memory        |
 
 ## MVP Build Sequence
 

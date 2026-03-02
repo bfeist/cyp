@@ -1,6 +1,8 @@
 # Canonical Data Model Proposal (Prototype)
 
-_Last updated: 2026-03-01_
+_Last updated: 2026-03-02 (trait assertion schema confirmed by Brief 5; connector fields confirmed by Briefs 1–3)_
+
+> **Key schema change from research:** behavioral/temperament fields on `DogListing` must not be stored as flat booleans or enums. They must be stored as typed evidence-assertion objects with `value`, `confidence`, `context`, `source`, and `time_scope`. See `TraitAssertion` entity below.
 
 ## Design Principles
 
@@ -85,14 +87,46 @@ Suggested fields:
 - `weight_kg` (nullable)
 - `spayed_neutered` (nullable bool)
 - `house_trained` (nullable bool)
-- `good_with_children` (nullable enum/score)
-- `good_with_dogs` (nullable enum/score)
-- `good_with_cats` (nullable enum/score)
+- `good_with_children` (**deprecated flat field** — replace with `TraitAssertion`)
+- `good_with_dogs` (**deprecated flat field** — replace with `TraitAssertion`)
+- `good_with_cats` (**deprecated flat field** — replace with `TraitAssertion`)
 - `special_needs_flags` (json)
 - `adoption_fee_amount` (nullable)
 - `currency`
 - `listing_url`
 - `first_seen_at`, `last_seen_at`
+
+## 4a) `TraitAssertion` _(new — required by Brief 5)_
+
+Replaces flat boolean/enum behavioral fields on `DogListing`. Each assertion represents one piece of extracted behavioral evidence.
+
+Suggested fields:
+
+- `assertion_id` (uuid)
+- `dog_id` (fk — canonical dog, not listing)
+- `listing_id` (fk — source listing context)
+- `trait_path` (string — e.g., `reactivity.target_stimulus`, `sociability.with_dogs`, `energy.energy_level`)
+- `value` (string — ontology value, e.g., `yes`, `no`, `selective`, `high`, `moderate`)
+- `polarity` (`affirmed` | `negated` | `speculative`)
+- `certainty` (`observed` | `reported` | `speculative` | `trend_statement`)
+- `context` (string — e.g., `on_leash`, `off_leash`, `in_kennel`, `in_home`, `unknown`)
+- `time_scope` (`intake` | `in_shelter` | `foster` | `post_adoption` | `unknown`)
+- `source_type` (`foster_notes` | `staff_notes` | `owner_surrender` | `standardized_test` | `listing_bio` | `unknown`)
+- `confidence` (float 0–1 — calibrated; use ECE-corrected temperature scaling)
+- `evidence_spans` (json array of raw text excerpts)
+- `expires_at` (nullable — behavior traits change; set for time-limited assessments)
+- `created_at`, `updated_at`
+
+**Contradiction log**: store unresolved contradictions separately:
+
+- `contradiction_id` (uuid)
+- `dog_id` (fk)
+- `trait_path`
+- `contradiction_type` (`contextual_difference` | `soft_conflict` | `explicit_requires_review`)
+- `assertion_a_id`, `assertion_b_id` (fks)
+- `note` (string — auto-generated explanation)
+- `status` (`unresolved` | `resolved_context` | `resolved_temporal` | `human_reviewed`)
+- `resolved_by`, `resolved_at` (nullable)
 
 ## 5) `ListingMedia`
 

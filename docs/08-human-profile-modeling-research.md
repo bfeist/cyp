@@ -1,6 +1,8 @@
 # Human Profile Modeling Research Plan (Third Pillar)
 
-_Last updated: 2026-03-01_
+_Last updated: 2026-03-02 (confirmed and expanded from Brief 6 deep research)_
+
+> **Research confirmed:** 3-layer profile model validated, trait ontology confirmed, event schema defined (17 event types), MVP model roadmap confirmed, bias/privacy risks documented. See `00-executive-summary.md`, Decision 5.
 
 ## Why this matters
 
@@ -18,44 +20,133 @@ Define and validate a profile system that goes beyond self-report and incorporat
 
 ---
 
-## Human Profiling Framework (v1 → v3)
+## Human Profiling Framework (confirmed v1 → v3 roadmap)
 
-## v1: Structured onboarding (baseline)
+## v1: Structured onboarding + hard constraint gates (confirmed MVP)
 
 Collect explicit constraints and preferences:
 
-- household composition (children, elders, other pets)
-- living context (space, schedule, activity bandwidth)
+- household composition (children, elders, other pets) — **first-class, not a footnote** (pet incompatibility is a top return driver)
+- living context (space, schedule, hours alone, activity bandwidth)
 - budget tolerance (food, grooming, medical, insurance)
 - experience level with dogs and training confidence
 - acquisition preference (adopt/purchase/either)
+- expectation setting: "what you expect the dog to be like in 2 weeks / 3 months" — treat as editable/monitored, not one-time
 
-## v2: Behavioral inference layer
+**v1 fit score: 5 interpretable weighted components**
 
-Collect implicit preference signals:
+| Component               | What it captures                                                               | Evidence basis                                           |
+| ----------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| Needs coverage          | Exercise/enrichment capacity vs energy/excitability                            | Common return driver: nuisance behavior from unmet needs |
+| Risk alignment          | Experience/training willingness vs fearfulness/separation behavior uncertainty | Behavior-related issues are top return category          |
+| Household compatibility | Kids/pets/visitors vs dog sociability indicators                               | Pet incompatibility is a top return driver               |
+| Care complexity fit     | Grooming/medical routines vs budget/time                                       | Cost of ownership and bond satisfaction                  |
+| Bonding style           | Affectionate vs active engagement preference                                   | Dyadic relationship quality                              |
 
-- which profiles user lingers on
-- save/pass patterns
-- message initiation patterns
-- abandonment points in funnel
-- tolerance signals (distance, age, mix-breed openness)
+## v2: Behavioral inference layer (ML ranker with bias correction)
+
+Collect implicit preference signals. **Start logging immediately in v1** (missing events = missing training data):
+
+- `dog_view` (must include `position` + `surface` fields for bias correction)
+- `dog_save`
+- `dog_dismiss` (with optional `dismiss_reason`)
+- `message_thread_start`
+- `meet_and_greet_scheduled`
+- `application_submitted`
+- `adoption_completed`
+- `post_adoption_checkin` (rating + issues + time_cost_delta)
+- `return_reported` (with `reason_code` taxonomy: behavior, pet incompatibility, health/allergies, life circumstances, expectation mismatch)
+
+**Model approach**: learning-to-rank with inverse propensity scoring to correct position bias. Graded labels: view (weak) → save → apply → adopt → retention at 30/90 days.
 
 ## v3: Adaptive psychometric + outcome learning
 
-Infer deeper style dimensions:
+Adaptive elicitation methods (confirmed by research):
 
-- novelty vs predictability preference
-- routine tolerance
-- emotional support expectation
-- noise/activity tolerance
-- training commitment likelihood
+- **Pairwise micro-choices**: "Which would you rather meet: Dog A or Dog B?" — Bradley-Terry preference model; active strategy selects maximally informative comparisons
+- **Conversational prompts** mapped to ontology nodes: "Describe your weekday routine" → extracts `hours_alone`, `exercise_capacity`, `visitor_frequency`; immediately shown as editable chips
+- **Active learning trigger**: ask when posterior uncertainty would materially change recommendations (e.g., user saves high-energy dogs but claimed low-energy)
+- **Contextual bandit exploration**: Thompson sampling to surface diverse-but-plausible dogs; improves learning and avoids over-commitment to early noisy signals
 
-Then update profile based on outcomes:
+---
 
-- successful adoption/purchase
-- return/re-homing risk signals
-- post-match satisfaction
-- mismatch reasons
+## Confirmed Trait Ontology (from Brief 6)
+
+### Human-side dimensions (3 layers)
+
+**Layer 1 — Hard constraints** (deterministic gates):
+`allergies`, `other_pets`, `housing_type`, `mobility_limits`, `max_hours_alone`, `budget_ceiling`
+
+**Layer 2 — Capacity and lifestyle fit**:
+`time_capacity`, `schedule_regularity`, `exercise_capacity`, `training_willingness`, `experience_level`, `tolerance_for_challenging_behavior`, `handling_skill`
+
+**Layer 3 — Preference and bonding style**:
+`affectionate_engagement_preference`, `active_engagement_preference`, `novelty_tolerance`, `noise_sensitivity`, `cleanliness_tolerance`, `emotional_support_expectation`, `risk_tolerance_medical_behavioral`
+
+### Dog-side trait groups (store with confidence + provenance + `expires_at`)
+
+- **Temperament/behavior factors**: fearfulness, dog-directed fear, separation behaviors, excitability/energy, trainability/responsiveness, stranger-directed fear, attachment/attention-seeking (mapped to C-BARQ/DPQ factor groupings)
+- **Activity and enrichment needs**: energy, play style, stamina, recovery time
+- **Sociability**: with dogs, cats, children, visitors
+- **Care complexity**: grooming, medical needs, special diets
+
+**Critical design note**: shelter assessments have limited predictive power (especially for aggression); store all behavioral traits probabilistically with multi-source provenance. Never hard-gate on a single shelter assessment.
+
+---
+
+## Confirmed Event Schema (17 event types from Brief 6)
+
+| Event                        | Actor         | Key fields                                                                                           |
+| ---------------------------- | ------------- | ---------------------------------------------------------------------------------------------------- |
+| `profile_set_constraint`     | user          | `constraint_type`, `value`, `source="explicit"`                                                      |
+| `profile_set_preference`     | user          | `preference_type`, `value`, `strength`, `context`                                                    |
+| `trait_inferred_update`      | system        | `trait_type`, `value`, `confidence`, `evidence_event_ids`, `model_version`                           |
+| `dog_view`                   | user          | `dog_id`, `listing_id`, **`position`** (required), `surface`, `dwell_ms`                             |
+| `dog_save`                   | user          | `dog_id`, `listing_id`                                                                               |
+| `dog_dismiss`                | user          | `dog_id`, `listing_id`, `dismiss_reason`                                                             |
+| `message_thread_start`       | user          | `counterparty_type`, `listing_id`                                                                    |
+| `meet_and_greet_scheduled`   | user          | `dog_id`, `datetime`, `location_type`                                                                |
+| `application_started`        | user          | `dog_id`, `listing_id`                                                                               |
+| `application_submitted`      | user          | `dog_id`, `listing_id`, `self_reported_commitment_score`                                             |
+| `adoption_completed`         | partner/admin | `dog_id`, `user_id`, `date`, `channel`, `fee_bucket`                                                 |
+| `post_adoption_checkin`      | user          | `days_since_adoption`, `rating`, `issues[]`, `time_cost_delta`                                       |
+| `return_reported`            | partner/admin | `dog_id`, `days_since_adoption`, `reason_code`, `free_text`                                          |
+| `preference_pairwise_choice` | user          | `option_a_id`, `option_b_id`, `choice`, `question_strategy`                                          |
+| `explanation_shown`          | system        | `dog_id`, `explanation_id`, `user_action_after`                                                      |
+| `profile_correction`         | user          | `trait_type`, `old_value`, `new_value`, `why_incorrect`                                              |
+| `return_reason_taxonomy`     | system        | codes: behavior / pet_incompatibility / health_allergies / life_circumstances / expectation_mismatch |
+
+## Confirmed Bias and Privacy Risk Matrix (from Brief 6)
+
+| Risk                               | Expected manifestation                                              | Confirmed mitigation                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Popularity/exposure bias           | Photogenic dogs get all traffic; tail inventory invisible           | Propensity correction (IPS) + exposure quotas + diversity constraints                                            |
+| Socioeconomic proxy bias           | Device type / neighborhood as proxy for protected attribute         | Feature governance; fairness testing on exposure and outcomes                                                    |
+| Dog labeling bias                  | Overconfident aggression predictions from noisy shelter assessments | Multi-source trait aggregation + uncertainty display + conservative safety gates                                 |
+| Overcollection                     | Lifestyle/health data collected beyond stated purpose               | Purpose strings per field, progressive disclosure, short retention for raw logs                                  |
+| User profiling rights              | GDPR/CASL automated decision concerns                               | Non-deterministic framing (decision support, not denial); meaningful explanations + correction UX                |
+| Engagement vs welfare misalignment | Popular/sensational dogs optimized, not good-fit dogs               | Multi-objective: weight retention/welfare signals; constrain by needs-coverage + risk-alignment gates            |
+| Expectation mismatch amplification | App overpromises; returns increase                                  | Calibrated language ("likely fit"); uncertainty display for behavior traits; early post-adoption support prompts |
+
+---
+
+## Confirmed Explanation UX Pattern (from Brief 6)
+
+Explanation format per match:
+
+```
+• Constraint match: "Fits your allergy constraint and housing size."
+• Lifestyle fit: "Energy level matches your 45–60 min/day walk plan."
+• Compatibility: "Marked as comfortable with other dogs; you have a resident dog."
+• What to expect (uncertainty-aware): "Some signs of separation stress reported in foster notes;
+  recommended: gradual alone-time plan."
+```
+
+Profile correction UX (required from day 1):
+
+- Every inferred trait displayed as a chip with confidence: "We think you prefer high-energy dogs (70%)." + one-tap edit
+- "Not relevant" and "Stop using this" controls at trait level
+- "I dismissed because..." lightweight label capture
 
 ---
 

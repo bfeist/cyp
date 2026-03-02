@@ -294,10 +294,38 @@ When you get a deep research report back:
 4. Update `docs/07-clearinghouse-api-architecture.md` and `docs/08-human-profile-modeling-research.md` with any architecture/model decisions.
 5. Track unresolved questions at the bottom of this file.
 
+## Completed Research Runs
+
+| Brief                                      | File                                                              | Status   |
+| ------------------------------------------ | ----------------------------------------------------------------- | -------- |
+| Brief 1 — Adoption API Feasibility         | `research-runs/2026-03-01-brief-1-adoption-api-feasibility.md`    | accepted |
+| Brief 2 — Shelter Software Integration Map | `research-runs/2026-03-01-brief-2-shelter-software-map.md`        | accepted |
+| Brief 3 — Canada Index Landscape           | `research-runs/2026-03-01-brief-3-canada-index-landscape.md`      | accepted |
+| Brief 4 — Breeder Quality Signals          | `research-runs/2026-03-01-brief-4-breeder-quality-signals.md`     | accepted |
+| Brief 5 — Temperament NLP Extraction       | `research-runs/2026-03-01-brief-5-temperament-nlp.md`             | accepted |
+| Brief 6 — Human Profile Modeling           | `research-runs/2026-03-01-brief-6-human-profile-modeling.md`      | accepted |
+| Brief 7 — Selenium Scale Architecture      | `research-runs/2026-03-01-brief-7-selenium-scale-architecture.md` | accepted |
+
+---
+
 ## Open Questions Log
 
-- Is there a currently active, public Petfinder API with new docs URL and approvals process?
-- Which Canadian provincial shelter groups can provide feed-level access at scale?
-- Which breeder channels provide verifiable health-testing data vs marketing-only claims?
-- What minimum signal set is required to outperform questionnaire-only matching?
-- Which Selenium-extracted fields most improve match quality per engineering cost?
+**Resolved by research runs:**
+
+- ~~Is there a currently active, public Petfinder API?~~ → **No. Decommissioned 2025-12-02. (Brief 1)**
+- ~~Which breeder channels provide verifiable health-testing data?~~ → **CHIC/OFA = strongest. Good Dog = most structured self-reported. CKC/UKC = directory only. (Brief 4)**
+
+**Still open:**
+
+- What commercial terms does Adopt-a-Pet offer partners, and what is the typical onboarding timeline?
+- Are any Petfinder commercial data deals still active with larger players?
+- What are exact API field names and rate limits for ShelterBuddy production access?
+- Does ShelterLuv's partner API key include all behavioral attribute fields or only fixed attributes?
+- What is Quebec's CQLPA/privacy regulatory posture for cross-province listing data aggregation?
+- Is Les Pattes Jaunes (Quebec) open to a data partnership?
+- What does OFA charge for licensed data reuse in a commercial recommendation product?
+- Can CHIC numbers be looked up via a public machine-readable endpoint or only via web search?
+- What return-rate benchmark (by category) should we set as a baseline "good" outcome metric?
+- What minimum number of interactions is needed before an ML ranker outperforms the rules baseline?
+- Which specific sources require Selenium vs having stable hidden JSON/GraphQL endpoints discoverable via HAR?
+- What bot detection/fingerprinting is likely to be encountered at scale on high-value dynamic sources?
