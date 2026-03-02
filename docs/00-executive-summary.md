@@ -69,12 +69,12 @@ The adoption landscape is operationally regional and decentralized. There is no 
 
 Connector priority:
 
-| Priority | Platform | Why | Integration surface |
-| -------- | -------- | --- | ------------------- |
-| 1 | RescueGroups | 6,200+ partner orgs, v5 REST API active | REST API + FTP |
-| 2 | ShelterLuv | 50-state network, behavioral attributes aligned to schema | API key + polling |
-| 3 | ShelterBuddy | Incremental sync (`UpdatedSinceUtc`), behavior assessment endpoints | REST API |
-| 4 | PetPoint / 24Pet | ~1,200 municipal partners, US + Canada footprint | Vendor-mediated |
+| Priority | Platform         | Why                                                                 | Integration surface |
+| -------- | ---------------- | ------------------------------------------------------------------- | ------------------- |
+| 1        | RescueGroups     | 6,200+ partner orgs, v5 REST API active                             | REST API + FTP      |
+| 2        | ShelterLuv       | 50-state network, behavioral attributes aligned to schema           | API key + polling   |
+| 3        | ShelterBuddy     | Incremental sync (`UpdatedSinceUtc`), behavior assessment endpoints | REST API            |
+| 4        | PetPoint / 24Pet | ~1,200 municipal partners, US + Canada footprint                    | Vendor-mediated     |
 
 Canada has no national index. Coverage requires SMS vendor connectors (which already have Canadian footprints) plus direct provincial operator partnerships (BC SPCA, Ontario SPCA, Humane Canada network). Quebec requires bilingual handling and separate operator relationships. Canada is Wave 2.
 
@@ -86,13 +86,13 @@ Canada has no national index. Coverage requires SMS vendor connectors (which alr
 
 The v1 profile is a structured onboarding questionnaire producing a 5-component weighted fit score:
 
-| Component | What it captures |
-| --------- | ---------------- |
-| Needs coverage | Exercise/enrichment capacity vs dog energy and excitability |
-| Risk alignment | Training experience/willingness vs behavioral uncertainty |
-| Household compatibility | Children/pets/visitors vs dog sociability profile |
-| Care complexity fit | Grooming/medical budget and time vs breed/dog complexity |
-| Bonding style | Affectionate vs activity-oriented engagement preference |
+| Component               | What it captures                                            |
+| ----------------------- | ----------------------------------------------------------- |
+| Needs coverage          | Exercise/enrichment capacity vs dog energy and excitability |
+| Risk alignment          | Training experience/willingness vs behavioral uncertainty   |
+| Household compatibility | Children/pets/visitors vs dog sociability profile           |
+| Care complexity fit     | Grooming/medical budget and time vs breed/dog complexity    |
+| Bonding style           | Affectionate vs activity-oriented engagement preference     |
 
 Hard constraints (allergies, housing rules, other pets, hours alone) are gate conditions applied before scoring, not score components.
 
@@ -132,12 +132,12 @@ Layer 5  API CLEARINGHOUSE SURFACE
 
 Connector tier model:
 
-| Tier | Type | Examples |
-| ---- | ---- | -------- |
-| A | Official API | RescueGroups, ShelterLuv, ShelterBuddy |
-| B | Partner feed | FTP/SFTP export, XML/JSON syndication |
-| C | Selenium scrape | Dynamic sites with no viable API |
-| D | Manual curation | CAPTCHA-blocked or one-off sources |
+| Tier | Type            | Examples                               |
+| ---- | --------------- | -------------------------------------- |
+| A    | Official API    | RescueGroups, ShelterLuv, ShelterBuddy |
+| B    | Partner feed    | FTP/SFTP export, XML/JSON syndication  |
+| C    | Selenium scrape | Dynamic sites with no viable API       |
+| D    | Manual curation | CAPTCHA-blocked or one-off sources     |
 
 Selenium at scale: Kubernetes HPA workers + Selenium Grid (Router → New Session Queue → Distributor → Nodes) + at-least-once queue with DLQ isolation + `ExtractionSpec` versioning (treat selector changes as versioned releases, canary before rollout) + 4-layer breakage detection (unit tests → canary runs → synthetic monitoring → production alerts).
 
@@ -169,29 +169,29 @@ These cross-cut all three pillars and must be respected at the schema and API le
 
 ## Confirmed Decisions (from deep research)
 
-| # | Decision | Brief |
-|---|----------|-------|
-| 1 | RescueGroups v5 is the MVP ingestion spine. Petfinder decommissioned 2025-12-02. Adopt-a-Pet is partner-gated — pursue as BD track. | 1 |
-| 2 | Shelter management systems (not aggregator platforms) are the real source of truth. Build SMS connectors in order: RescueGroups → ShelterLuv → ShelterBuddy → PetPoint. | 2 |
-| 3 | Canada has no national index. Use SMS vendor connectors + direct provincial operator partnerships. Wave 2 effort, not MVP. | 3 |
-| 4 | Breeder quality scoring is feasible via a 6-dimension framework anchored to CHIC/OFA verification. Display Quality Score and Evidence Confidence as separate signals. Never binary-label breeders. | 4 |
-| 5 | Behavioral traits from shelter text must use an evidence-assertion model with 6-dimension ontology, per-assertion calibrated confidence, and two-tier contradiction detection. Flat booleans are architecturally insufficient. | 5 |
-| 6 | Human profile model has a concrete v1 (rules + constraint gates) → v2 (ML ranker with bias correction) → v3 (adaptive elicitation + bandit) build path. Event schema must be instrumented from day one. | 6 |
-| 7 | Selenium at scale requires: Kubernetes HPA, Selenium Grid, at-least-once queue + DLQ, ExtractionSpec versioning, 4-layer breakage detection, per-run artifact archiving. | 7 |
+| #   | Decision                                                                                                                                                                                                                       | Brief |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----- |
+| 1   | RescueGroups v5 is the MVP ingestion spine. Petfinder decommissioned 2025-12-02. Adopt-a-Pet is partner-gated — pursue as BD track.                                                                                            | 1     |
+| 2   | Shelter management systems (not aggregator platforms) are the real source of truth. Build SMS connectors in order: RescueGroups → ShelterLuv → ShelterBuddy → PetPoint.                                                        | 2     |
+| 3   | Canada has no national index. Use SMS vendor connectors + direct provincial operator partnerships. Wave 2 effort, not MVP.                                                                                                     | 3     |
+| 4   | Breeder quality scoring is feasible via a 6-dimension framework anchored to CHIC/OFA verification. Display Quality Score and Evidence Confidence as separate signals. Never binary-label breeders.                             | 4     |
+| 5   | Behavioral traits from shelter text must use an evidence-assertion model with 6-dimension ontology, per-assertion calibrated confidence, and two-tier contradiction detection. Flat booleans are architecturally insufficient. | 5     |
+| 6   | Human profile model has a concrete v1 (rules + constraint gates) → v2 (ML ranker with bias correction) → v3 (adaptive elicitation + bandit) build path. Event schema must be instrumented from day one.                        | 6     |
+| 7   | Selenium at scale requires: Kubernetes HPA, Selenium Grid, at-least-once queue + DLQ, ExtractionSpec versioning, 4-layer breakage detection, per-run artifact archiving.                                                       | 7     |
 
 ---
 
 ## What changed from pre-research assumptions
 
-| Prior assumption | Confirmed reality |
-|---|---|
-| Petfinder API is available | Decommissioned 2025-12-02. Not a data source. |
-| Adopt-a-Pet is a viable MVP API source | Partner-gated. Requires business relationship. |
-| Canada has a national adoption index | Does not exist. Must build from vendor connectors + partnerships. |
-| Shelter listing platforms are the authoritative source | They are downstream syndication. Shelter management systems are the source of truth. |
-| Breeder quality is hard to score objectively | Feasible with 6-dimension framework anchored to CHIC/OFA registry verification. |
-| Human profiling can be added post-launch | Event logging schema must be designed from day one or v2 training data is permanently lost. |
-| Flat behavioral fields like `good_with_dogs` are sufficient | Unsafe. Absence of mention ≠ absence of behavior. Evidence-assertion model required. |
+| Prior assumption                                            | Confirmed reality                                                                           |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Petfinder API is available                                  | Decommissioned 2025-12-02. Not a data source.                                               |
+| Adopt-a-Pet is a viable MVP API source                      | Partner-gated. Requires business relationship.                                              |
+| Canada has a national adoption index                        | Does not exist. Must build from vendor connectors + partnerships.                           |
+| Shelter listing platforms are the authoritative source      | They are downstream syndication. Shelter management systems are the source of truth.        |
+| Breeder quality is hard to score objectively                | Feasible with 6-dimension framework anchored to CHIC/OFA registry verification.             |
+| Human profiling can be added post-launch                    | Event logging schema must be designed from day one or v2 training data is permanently lost. |
+| Flat behavioral fields like `good_with_dogs` are sufficient | Unsafe. Absence of mention ≠ absence of behavior. Evidence-assertion model required.        |
 
 ---
 
@@ -246,28 +246,28 @@ From Brief 7 (Selenium architecture):
 
 ## Research Runs Status
 
-| Brief | File | Status |
-| --- | --- | --- |
-| Brief 1 — Adoption API Feasibility | `research-runs/2026-03-01-brief-1-adoption-api-feasibility.md` | accepted |
-| Brief 2 — Shelter Software Integration Map | `research-runs/2026-03-01-brief-2-shelter-software-map.md` | accepted |
-| Brief 3 — Canada Index Landscape | `research-runs/2026-03-01-brief-3-canada-index-landscape.md` | accepted |
-| Brief 4 — Breeder Quality Signals | `research-runs/2026-03-01-brief-4-breeder-quality-signals.md` | accepted |
-| Brief 5 — Temperament NLP Extraction | `research-runs/2026-03-01-brief-5-temperament-nlp.md` | accepted |
-| Brief 6 — Human Profile Modeling | `research-runs/2026-03-01-brief-6-human-profile-modeling.md` | accepted |
-| Brief 7 — Selenium Scale Architecture | `research-runs/2026-03-01-brief-7-selenium-scale-architecture.md` | accepted |
+| Brief                                      | File                                                              | Status   |
+| ------------------------------------------ | ----------------------------------------------------------------- | -------- |
+| Brief 1 — Adoption API Feasibility         | `research-runs/2026-03-01-brief-1-adoption-api-feasibility.md`    | accepted |
+| Brief 2 — Shelter Software Integration Map | `research-runs/2026-03-01-brief-2-shelter-software-map.md`        | accepted |
+| Brief 3 — Canada Index Landscape           | `research-runs/2026-03-01-brief-3-canada-index-landscape.md`      | accepted |
+| Brief 4 — Breeder Quality Signals          | `research-runs/2026-03-01-brief-4-breeder-quality-signals.md`     | accepted |
+| Brief 5 — Temperament NLP Extraction       | `research-runs/2026-03-01-brief-5-temperament-nlp.md`             | accepted |
+| Brief 6 — Human Profile Modeling           | `research-runs/2026-03-01-brief-6-human-profile-modeling.md`      | accepted |
+| Brief 7 — Selenium Scale Architecture      | `research-runs/2026-03-01-brief-7-selenium-scale-architecture.md` | accepted |
 
 ---
 
 ## Document Map
 
-| Doc | What it covers |
-|--|--|
-| `01-data-landscape-us-canada.md` | Executive landscape: data availability by category, connector priority, Canada strategy, NLP extraction |
-| `02-source-catalog.md` | Source-by-source inventory with confirmed access status, auth method, rate limits, and field notes |
-| `03-adoption-indexing-us-canada.md` | Deep dive on national vs regional adoption indexing; multi-source ingestion and deduplication requirements |
-| `04-data-model-proposal.md` | Canonical schema: all entities including `TraitAssertion`, `TraitContradiction`, `DogListing`, `Breed` |
-| `05-access-legal-scraping-guidelines.md` | Ingestion policy, AKC/OFA licensing risk flags, per-source legal posture, provenance requirements |
-| `06-research-backlog-and-ai-agent-briefs.md` | Research backlog, deep research prompts, completed run tracking, open questions |
-| `07-clearinghouse-api-architecture.md` | Full 5-layer clearinghouse architecture, connector tier model, Selenium scale design, golden signal KPIs |
-| `08-human-profile-modeling-research.md` | Third pillar deep dive: v1–v3 model roadmap, 17-event schema, bias/privacy risks, annotation plan |
-| `research-runs/` | Raw output files from all 7 external deep research sessions |
+| Doc                                          | What it covers                                                                                             |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `01-data-landscape-us-canada.md`             | Executive landscape: data availability by category, connector priority, Canada strategy, NLP extraction    |
+| `02-source-catalog.md`                       | Source-by-source inventory with confirmed access status, auth method, rate limits, and field notes         |
+| `03-adoption-indexing-us-canada.md`          | Deep dive on national vs regional adoption indexing; multi-source ingestion and deduplication requirements |
+| `04-data-model-proposal.md`                  | Canonical schema: all entities including `TraitAssertion`, `TraitContradiction`, `DogListing`, `Breed`     |
+| `05-access-legal-scraping-guidelines.md`     | Ingestion policy, AKC/OFA licensing risk flags, per-source legal posture, provenance requirements          |
+| `06-research-backlog-and-ai-agent-briefs.md` | Research backlog, deep research prompts, completed run tracking, open questions                            |
+| `07-clearinghouse-api-architecture.md`       | Full 5-layer clearinghouse architecture, connector tier model, Selenium scale design, golden signal KPIs   |
+| `08-human-profile-modeling-research.md`      | Third pillar deep dive: v1–v3 model roadmap, 17-event schema, bias/privacy risks, annotation plan          |
+| `research-runs/`                             | Raw output files from all 7 external deep research sessions                                                |
